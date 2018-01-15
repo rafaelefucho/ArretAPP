@@ -11,6 +11,15 @@ public class ArretsTransport {
     private String arretRefs;
     private String arretLineCode;
     private String arretLineSens;
+    private String arretVersSens;
+
+    public String getArretVersSens() {
+        return arretVersSens;
+    }
+
+    public void setArretVersSens(String arretVersSens) {
+        this.arretVersSens = arretVersSens;
+    }
 
     @Override
     public String toString() {
@@ -23,12 +32,13 @@ public class ArretsTransport {
                 '}';
     }
 
-    public ArretsTransport(String arretCode, String arretNom, String arretRefs, String arretLineCode, String arretLineSens) {
+    public ArretsTransport(String arretCode, String arretNom, String arretRefs, String arretLineCode, String arretLineSens, String arretVersSens) {
         this.arretCode = arretCode;
         this.arretNom = arretNom;
         this.arretRefs = arretRefs;
         this.arretLineCode = arretLineCode;
         this.arretLineSens = arretLineSens;
+        this.arretVersSens = arretVersSens;
     }
 
     public String getArretCode() {

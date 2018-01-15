@@ -19,8 +19,14 @@ import java.util.List;
 
 public class loadData {
 
-    public static void asdf(){
-
+    public static String[] fillArrets(List<ArretsTransport> list){
+        String[] array = new String[list.size()];
+        int index = 0;
+        for (ArretsTransport value : list) {
+            array[index] = (String) (value.getArretNom() + " --> "+ value.getArretLineSens()); //For the future fix this suggestion
+            index++;
+        }
+        return array;
     }
 
     public static List<LignesTransport> loadLignes(Context context) {
@@ -64,14 +70,13 @@ public class loadData {
             while((line = reader.readLine()) != null ){
                 String[] lineWithoutcommas = line.split(",");
 
-                Log.d("DiviaAPP", "Estamos en el Code" + lineWithoutcommas[0]);
-
                 ArretsTransport ligne = new ArretsTransport(
                         lineWithoutcommas[0], //Code
                         lineWithoutcommas[1], //Nom
                         lineWithoutcommas[2], //Refs
                         lineWithoutcommas[3], //Ligne Code
-                        lineWithoutcommas[4]  //Ligne Sens
+                        lineWithoutcommas[4],  //Ligne Sens
+                        lineWithoutcommas[5]  //Ligne Vers
                 );
                 arretsTransportList.add(ligne);
             }
