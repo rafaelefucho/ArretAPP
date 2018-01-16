@@ -19,6 +19,7 @@ import java.util.List;
 
 public class loadData {
 
+    //Proximo a ser borrado
     public static String[] fillArrets(List<ArretsTransport> list){
         String[] array = new String[list.size()];
         int index = 0;
@@ -85,7 +86,5 @@ public class loadData {
             e.printStackTrace();
         }
         return arretsTransportList;
-
     }
-
 }

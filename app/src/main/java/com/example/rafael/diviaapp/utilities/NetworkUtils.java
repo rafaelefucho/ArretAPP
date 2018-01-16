@@ -15,6 +15,7 @@ public class NetworkUtils {
 
     final static String URL_KEOLIS_LIGNES ="http://timeo3.keolis.com/relais/217.php?xml=1";
     final static String URL_KEOLIS_BASE_ARRETS ="http://timeo3.keolis.com/relais/217.php?";
+    final static String URL_KEOLIS_BASE_ARRET_TEMP ="http://timeo3.keolis.com/relais/217.php?xml=3&ran=1&";
 
     public static String buildUrlArret(String ligne, String sens){
         //Builds a URL like this one: http://timeo3.keolis.com/relais/217.php?xml=1&ligne=T1&sens=A
@@ -22,6 +23,11 @@ public class NetworkUtils {
         return stringURL;
     }
 
+    public static String buildUrlArretTemp(String refs){
+        String[] reference = refs.split("|");
+        String stringURL = URL_KEOLIS_BASE_ARRET_TEMP + "&refs=" + reference[0];
+        return stringURL;
+    }
 
     public static String getXMLfromKeolis(String URL) throws IOException {
 
