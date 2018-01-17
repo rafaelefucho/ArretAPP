@@ -24,8 +24,12 @@ public class NetworkUtils {
     }
 
     public static String buildUrlArretTemp(String refs){
-        String[] reference = refs.split("|");
-        String stringURL = URL_KEOLIS_BASE_ARRET_TEMP + "&refs=" + reference[0];
+        //String[] reference = refs; //.split("|");
+        if (refs.contains("|")) {
+            String[] reference = refs.split("|");
+
+        }
+        String stringURL = URL_KEOLIS_BASE_ARRET_TEMP + "&refs=" + refs;
         return stringURL;
     }
 

@@ -6,57 +6,34 @@ package com.example.rafael.diviaapp.utilities.JsonUtils;
 
 public class Horaires
 {
-    private String id;
+    private String nb;
 
-    private Passages passages;
+    private Horaire horaire;
 
-    private Description description;
-
-    private Messages messages;
-
-    public String getId ()
+    public String getNb ()
     {
-        return id;
+        return nb;
     }
 
-    public void setId (String id)
+    public void setNb (String nb)
     {
-        this.id = id;
+        this.nb = nb;
     }
 
-    public Passages getPassages ()
+    public Horaire getHoraire ()
     {
-        return passages;
+        return horaire;
     }
 
-    public void setPassages (Passages passages)
+    public void setHoraire (Horaire horaire)
     {
-        this.passages = passages;
-    }
-
-    public Description getDescription ()
-    {
-        return description;
-    }
-
-    public void setDescription (Description description)
-    {
-        this.description = description;
-    }
-
-    public Messages getMessages ()
-    {
-        return messages;
-    }
-
-    public void setMessages (Messages messages)
-    {
-        this.messages = messages;
+        this.horaire = horaire;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [id = "+id+", passages = "+passages+", description = "+description+", messages = "+messages+"]";
+        return "ClassPojo [nb = "+nb+", horaire = "+horaire+"]";
     }
 }
+
