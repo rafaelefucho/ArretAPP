@@ -12,6 +12,24 @@ public class ArretsTransport {
     private String arretLineCode;
     private String arretLineSens;
     private String arretVersSens;
+    private String arretLineColor;
+    private String arretLineNom;
+
+    public String getArretLineColor() {
+        return arretLineColor;
+    }
+
+    public void setArretLineColor(String arretLineColor) {
+        this.arretLineColor = arretLineColor;
+    }
+
+    public String getArretLineNom() {
+        return arretLineNom;
+    }
+
+    public void setArretLineNom(String arretLineNom) {
+        this.arretLineNom = arretLineNom;
+    }
 
     public String getArretVersSens() {
         return arretVersSens;
@@ -32,13 +50,15 @@ public class ArretsTransport {
                 '}';
     }
 
-    public ArretsTransport(String arretCode, String arretNom, String arretRefs, String arretLineCode, String arretLineSens, String arretVersSens) {
+    public ArretsTransport(String arretCode, String arretNom, String arretRefs, String arretLineCode, String arretLineSens, String arretVersSens, String arretLineColor, String arretLineNom) {
         this.arretCode = arretCode;
         this.arretNom = arretNom;
         this.arretRefs = arretRefs;
         this.arretLineCode = arretLineCode;
         this.arretLineSens = arretLineSens;
         this.arretVersSens = arretVersSens;
+        this.arretLineColor = arretLineColor;
+        this.arretLineNom = arretLineNom;
     }
 
     public String getArretCode() {

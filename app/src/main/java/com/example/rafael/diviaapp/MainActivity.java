@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<LignesTransport> mlignesTransportList = new ArrayList<LignesTransport>();
+    private List<LignesTransport> mlignesTransportList = new ArrayList<LignesTransport>(); //Soon to be erased
     private List<ArretsTransport> mArretTransportList = new ArrayList<ArretsTransport>();
     private String[] mLignesString; //Soon to be erased
     private String[] mArretsString; //Soon to be erased

@@ -77,7 +77,9 @@ public class loadData {
                         lineWithoutcommas[2], //Refs
                         lineWithoutcommas[3], //Ligne Code
                         lineWithoutcommas[4],  //Ligne Sens
-                        lineWithoutcommas[5]  //Ligne Vers
+                        lineWithoutcommas[5],  //Ligne Vers
+                        lineWithoutcommas[6],  //Ligne Code Color
+                        lineWithoutcommas[7]  //Ligne Complete Nom
                 );
                 arretsTransportList.add(ligne);
             }

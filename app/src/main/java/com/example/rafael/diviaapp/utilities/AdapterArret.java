@@ -2,6 +2,7 @@ package com.example.rafael.diviaapp.utilities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,9 +58,11 @@ public class AdapterArret extends ArrayAdapter<ArretsTransport> {
             TextView sensTV = (TextView) convertView.findViewById(R.id.textView_Sens);
 
 
-            ligneTV.setText(arret.getArretLineCode());
+            ligneTV.setText(arret.getArretLineNom());
             arretTV.setText(arret.getArretNom());
             sensTV.setText(arret.getArretVersSens());
+            String hexColor = Integer.toHexString(Integer.parseInt(arret.getArretLineColor()));
+            ligneTV.setBackgroundColor(0xff000000 + Integer.parseInt(hexColor,16));
 
         } catch (Exception e) {
             e.printStackTrace();
