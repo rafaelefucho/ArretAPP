@@ -52,8 +52,15 @@ public class AdapterArret extends ArrayAdapter<ArretsTransport> {
                 convertView = inflater.inflate(mLayoutResourceId, parent, false);
             }
             ArretsTransport arret = getItem(position);
-            TextView name = (TextView) convertView.findViewById(android.R.id.text1);
-            name.setText(arret.getArretLineCode() + ": "+ arret.getArretNom() + " --> "+ arret.getArretVersSens());
+            TextView ligneTV = (TextView) convertView.findViewById(R.id.textView_Ligne);
+            TextView arretTV = (TextView) convertView.findViewById(R.id.textView_Arret);
+            TextView sensTV = (TextView) convertView.findViewById(R.id.textView_Sens);
+
+
+            ligneTV.setText(arret.getArretLineCode());
+            arretTV.setText(arret.getArretNom());
+            sensTV.setText(arret.getArretVersSens());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +72,12 @@ public class AdapterArret extends ArrayAdapter<ArretsTransport> {
         return new Filter() {
             @Override
             public String convertResultToString(Object resultValue) {
-                return ((ArretsTransport) resultValue).getArretNom();
+                String result = null;
+                if (resultValue instanceof ArretsTransport) {
+                    ArretsTransport arret = (ArretsTransport) resultValue;
+                    result = arret.getArretLineCode() + ": "+ arret.getArretNom() + " --> "+ arret.getArretVersSens();
+                }
+                return result;
             }
 
             @Override

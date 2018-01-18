@@ -17,6 +17,7 @@ public class NetworkUtils {
     final static String URL_KEOLIS_BASE_ARRETS ="http://timeo3.keolis.com/relais/217.php?";
     final static String URL_KEOLIS_BASE_ARRET_TEMP ="http://timeo3.keolis.com/relais/217.php?xml=3&ran=1&";
 
+
     public static String buildUrlArret(String ligne, String sens){
         //Builds a URL like this one: http://timeo3.keolis.com/relais/217.php?xml=1&ligne=T1&sens=A
         String stringURL = URL_KEOLIS_BASE_ARRETS + "xml=1&ligne=" + ligne + "&sens=" + sens;

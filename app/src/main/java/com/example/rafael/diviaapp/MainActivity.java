@@ -78,9 +78,11 @@ public class MainActivity extends AppCompatActivity {
 
             Gson gson = new GsonBuilder().create();
             Xml_Data_Arret_Temp arretTemp = gson.fromJson(jsonObj.toString() , Xml_Data_Arret_Temp.class);
-            String next = arretTemp.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[0].getDuree();
 
-            return next;
+            String next = arretTemp.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[0].getDuree();
+            String nextA = arretTemp.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[1].getDuree();
+
+            return next + "\n" + nextA;
         }
 
         @Override
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
 
-        AdapterArret adapterArret = new AdapterArret(this, android.R.layout.simple_dropdown_item_1line, mArretTransportList);
+        AdapterArret adapterArret = new AdapterArret(this, R.layout.simple_dropdown_item, mArretTransportList);
         mAutoCompleteTextView.setAdapter(adapterArret);
         mAutoCompleteTextView.setThreshold(3);
 
