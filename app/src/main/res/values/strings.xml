@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">DiviaAPP</string>
+    <string name="autocomplete_hint">Please introduce the STOP</string>
+
+    <string name="default_nom">Salengro</string>
+    <string name="default_ligne">B12</string>
+    <string name="default_sens">Plombiers</string>
+    <string name="default_time1">12:35</string>
+    <string name="default_time2">12:45</string>
+
+    <string name="no_data">The is no data to show</string>
 </resources>

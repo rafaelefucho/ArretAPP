@@ -78,7 +78,8 @@ public class AdapterArret extends ArrayAdapter<ArretsTransport> {
                 String result = null;
                 if (resultValue instanceof ArretsTransport) {
                     ArretsTransport arret = (ArretsTransport) resultValue;
-                    result = arret.getArretLineCode() + ": "+ arret.getArretNom() + " --> "+ arret.getArretVersSens();
+                    //result = arret.getArretLineCode() + ": "+ arret.getArretNom() + " --> "+ arret.getArretVersSens();
+                    result = arret.getArretNom();
                 }
                 return result;
             }
