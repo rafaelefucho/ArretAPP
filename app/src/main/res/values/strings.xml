@@ -9,4 +9,6 @@
     <string name="default_time2">12:45</string>
 
     <string name="no_data">The is no data to show</string>
+    <string name="no_internet_connection">No internet, please check your connection.</string>
+    <string name="no_data_arrrets">There are not more TimeSchedule arrets for today</string>
 </resources>

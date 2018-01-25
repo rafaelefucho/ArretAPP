@@ -29,4 +29,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation files('libs/java-json.jar') //For transforming XML to JSON
     compile 'com.google.code.gson:gson:2.8.1' //For transforming JSON to Gson
+    compile 'com.android.support:recyclerview-v7:26.1.0' //Recycler View
 }
+

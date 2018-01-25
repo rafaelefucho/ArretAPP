@@ -4,26 +4,37 @@ package com.example.rafael.diviaapp;
  * Created by Rafael on 10/01/2018.
  */
 
+import android.content.ClipData;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.rafael.diviaapp.utilities.AdapterArret;
 import com.example.rafael.diviaapp.utilities.ArretsTransport;
+import com.example.rafael.diviaapp.utilities.FavoritesRecyclerAdapter;
 import com.example.rafael.diviaapp.utilities.JsonUtils.Xml_Data_Arret_Temp;
 import com.example.rafael.diviaapp.utilities.LignesTransport;
 import com.example.rafael.diviaapp.utilities.NetworkUtils;
+import com.example.rafael.diviaapp.utilities.data.ArretFavoriteContract;
+import com.example.rafael.diviaapp.utilities.data.ArretFavoriteDBHelper;
 import com.example.rafael.diviaapp.utilities.loadData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,22 +47,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FavoritesRecyclerAdapter.FavoritesItemClickListener{
 
-    AutoCompleteTextView mAutoCompleteTextView;
-    TextView mTextViewLigne;
-    TextView mTextViewArret;
-    TextView mTextViewSens;
-    TextView mTextViewTime1;
-    TextView mTextViewTime2;
-    ConstraintLayout mCLArretInfo;
-    ConstraintLayout mCLNoData;
-    ConstraintLayout mCLLoading;
-    Context mContextActivityMain;
+    private AutoCompleteTextView mAutoCompleteTextView;
+
+    private RecyclerView mFavoritesRV;
+    private FavoritesRecyclerAdapter mFavoritesRecyclerAdapter;
+
+    private TextView mTextViewLigne;
+    private TextView mTextViewArret;
+    private TextView mTextViewSens;
+    private TextView mTextViewTime1;
+    private TextView mTextViewTime2;
+
+    private ConstraintLayout mCLArretInfo;
+    private ConstraintLayout mCLNoData;
+    private ConstraintLayout mCLLoading;
+
+    private Context mContextActivityMain;
+
     private List<LignesTransport> mlignesTransportList = new ArrayList<LignesTransport>(); //Soon to be erased
     private List<ArretsTransport> mArretTransportList = new ArrayList<ArretsTransport>();
     private String[] mLignesString; //Soon to be erased
     private String[] mArretsString; //Soon to be erased
+
+    private SQLiteDatabase mDBArretFavorite;
 
     public static boolean isNetworkAvailable(final Context context) {
         final ConnectivityManager cm = (ConnectivityManager)
@@ -72,9 +92,65 @@ public class MainActivity extends AppCompatActivity {
         loadLignesAndArrets(this);
         setupAutoCompleteTextView();
         setupArretInfoOfTheTextView();
+        setupFavoritesDB();
+        setupRecyclerView();
 
 
+    }
 
+    private void setupFavoritesDB() {
+        ArretFavoriteDBHelper arretFavoriteDBHelper = new ArretFavoriteDBHelper(this);
+        mDBArretFavorite = arretFavoriteDBHelper.getWritableDatabase();
+    }
+
+    private void setupRecyclerView() {
+
+
+        mFavoritesRV = (RecyclerView) findViewById(R.id.recyclerview_favorites);
+        mFavoritesRV.setLayoutManager(new LinearLayoutManager(this));
+        Cursor cursor = getAllFavorites();
+        mFavoritesRecyclerAdapter = new FavoritesRecyclerAdapter(cursor,this, (FavoritesRecyclerAdapter.FavoritesItemClickListener) this);
+        mFavoritesRV.setAdapter(mFavoritesRecyclerAdapter);
+
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                long id = (long) viewHolder.itemView.getTag();
+                removeFavorite(id);
+                mFavoritesRecyclerAdapter.swapCursor(getAllFavorites());
+
+            }
+        }).attachToRecyclerView(mFavoritesRV);
+
+
+        Button btn = (Button) findViewById(R.id.button);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                add_arret_to_favorite(v);
+            }
+        });
+    }
+
+    private Cursor getAllFavorites() {
+        return mDBArretFavorite.query(
+                ArretFavoriteContract.ArretFavorite.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     private void setupArretInfoOfTheTextView() {
@@ -116,13 +192,50 @@ public class MainActivity extends AppCompatActivity {
                 if (item instanceof ArretsTransport){
                     ArretsTransport arret =(ArretsTransport) item;
                     String arretURL = NetworkUtils.buildUrlArretTemp(arret.getArretRefs());
+                    mTextViewArret.setTag(arretURL);
                     new getArretInfo().execute(arretURL);
                 }
             }
         });
     }
 
-    private class getArretInfo extends AsyncTask<String, Void, Xml_Data_Arret_Temp>{
+    private void add_arret_to_favorite(View view){
+
+        String arret = mTextViewArret.getText().toString();
+        String refs  = mTextViewArret.getTag().toString();
+        String ligne = mTextViewLigne.getText().toString();
+        String sens  = mTextViewSens.getText().toString();
+        String color = (String) mTextViewLigne.getTag();
+
+        ContentValues cv = new ContentValues();
+        cv.put(ArretFavoriteContract.ArretFavorite.COLUMN_ARRET,arret);
+        cv.put(ArretFavoriteContract.ArretFavorite.COLUMN_LIGNE,ligne);
+        cv.put(ArretFavoriteContract.ArretFavorite.COLUMN_SENS,sens);
+        cv.put(ArretFavoriteContract.ArretFavorite.COLUMN_REFS,refs);
+        cv.put(ArretFavoriteContract.ArretFavorite.COLUMN_COLOR,color);
+
+        mDBArretFavorite.insert(ArretFavoriteContract.ArretFavorite.TABLE_NAME,null,cv);
+        mFavoritesRecyclerAdapter.swapCursor(getAllFavorites());
+
+    }
+
+    private boolean removeFavorite(long id){
+
+        return mDBArretFavorite.delete(ArretFavoriteContract.ArretFavorite.TABLE_NAME,
+                ArretFavoriteContract.ArretFavorite._ID + "=" + id,null)>0;
+    }
+
+    @Override
+    public void onFavoriteItemClick(String clickedFavoriteRef) {
+
+        String arretURL = NetworkUtils.buildUrlArretTemp(clickedFavoriteRef);
+        mTextViewArret.setTag(clickedFavoriteRef);
+        new getArretInfo().execute(arretURL);
+
+    }
+
+
+    private class getArretInfo extends AsyncTask<String, Void, JSONObject>{
 
         @Override
         protected void onPreExecute() {
@@ -133,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Xml_Data_Arret_Temp doInBackground(String... strings) {
+        protected JSONObject doInBackground(String... strings) {
 
             String arretUrl = strings[0];
             String resultXML = null;
@@ -157,26 +270,38 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            Gson gson = new GsonBuilder().create();
-            Xml_Data_Arret_Temp arretTemp = gson.fromJson(jsonObj.toString() , Xml_Data_Arret_Temp.class);
 
-            return arretTemp;
+            return jsonObj;
         }
 
         @Override
-        protected void onPostExecute(Xml_Data_Arret_Temp dataArret) {
-            super.onPostExecute(dataArret);
+        protected void onPostExecute(JSONObject jsonObject){
+            super.onPostExecute(jsonObject);
 
-            if (dataArret == null){
+            //If not internet connection
+            if (jsonObject == null){
                 mCLLoading.setVisibility(View.GONE);
                 mCLNoData.setVisibility(View.VISIBLE);
+                TextView textView = (TextView) findViewById(R.id.cl_TextView_no_data);
+                textView.setText(getResources().getString(R.string.no_internet_connection));
                 return;
             }
 
+            Gson gson = new GsonBuilder().create();
+            Xml_Data_Arret_Temp dataArret = gson.fromJson(jsonObject.toString() , Xml_Data_Arret_Temp.class);
             String NPassages = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getNb();
+            String NPassagess = null;
+            try {
+                NPassagess = jsonObject.getJSONObject("horaire").getString("passages");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //If there is not next last buses
             if(Integer.parseInt(NPassages) < 2) {
                 mCLLoading.setVisibility(View.GONE);
                 mCLNoData.setVisibility(View.VISIBLE);
+                TextView textView = (TextView) findViewById(R.id.cl_TextView_no_data);
+                textView.setText(getResources().getString(R.string.no_data_arrrets));
                 return;
             }
 
@@ -192,6 +317,8 @@ public class MainActivity extends AppCompatActivity {
                     mTextViewSens.setText(arret.getArretVersSens());
                     mTextViewTime1.setText(nextT1);
                     mTextViewTime2.setText(nextT2);
+
+                    mTextViewLigne.setTag(arret.getArretLineColor()); //Putting color for adding it to the DB
 
                     String hexColor = Integer.toHexString(Integer.parseInt(arret.getArretLineColor()));
                     mTextViewLigne.setBackgroundColor(0xff000000 + Integer.parseInt(hexColor,16));

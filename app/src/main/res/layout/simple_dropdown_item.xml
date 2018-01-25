@@ -18,8 +18,9 @@
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:text="B12 "
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="#FFFFFF"
-        android:textStyle="bold"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,8 +29,11 @@
         android:id="@+id/textView_Arret"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
         android:text="Salengro"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/textView_Ligne"
         app:layout_constraintTop_toTopOf="@+id/textView_Ligne" />
 
@@ -39,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Chicago"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/textView_arrow"
         app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
 
@@ -46,8 +51,9 @@
         android:id="@+id/textView_arrow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:text="-->"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/textView_Arret"
         app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
 </android.support.constraint.ConstraintLayout>
