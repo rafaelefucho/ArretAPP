@@ -5,14 +5,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    >
 
     <TextView
-        android:id="@+id/textView_Ligne"
+        android:id="@+id/textView_Ligne_adapter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@color/colorPrimaryDark"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
@@ -22,32 +25,31 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView_Arret"
-        app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
-
-    <TextView
-        android:id="@+id/textView_Arret"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:text="Salengro"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView_Sens"
+        android:id="@+id/textView_Arret_adapter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Salengro"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView_Ligne_adapter"
+        app:layout_constraintTop_toTopOf="@+id/textView_Ligne_adapter"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView_Sens_adapter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="Chicago"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView_arrow"
-        app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
+        app:layout_constraintTop_toTopOf="@+id/textView_arrow" />
 
     <TextView
         android:id="@+id/textView_arrow"
@@ -56,6 +58,6 @@
         android:layout_marginStart="8dp"
         android:text="-->"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/textView_Ligne"
-        app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
+        app:layout_constraintStart_toEndOf="@+id/textView_Arret_adapter"
+        app:layout_constraintTop_toTopOf="@+id/textView_Arret_adapter" />
 </android.support.constraint.ConstraintLayout>

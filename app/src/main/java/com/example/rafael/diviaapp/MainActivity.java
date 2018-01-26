@@ -39,6 +39,7 @@ import com.example.rafael.diviaapp.utilities.loadData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -290,33 +291,37 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
             Gson gson = new GsonBuilder().create();
             Xml_Data_Arret_Temp dataArret = gson.fromJson(jsonObject.toString() , Xml_Data_Arret_Temp.class);
             String NPassages = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getNb();
-            String NPassagess = null;
-            try {
-                NPassagess = jsonObject.getJSONObject("horaire").getString("passages");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            //If there is not next last buses
-            if(Integer.parseInt(NPassages) < 2) {
-                mCLLoading.setVisibility(View.GONE);
-                mCLNoData.setVisibility(View.VISIBLE);
-                TextView textView = (TextView) findViewById(R.id.cl_TextView_no_data);
-                textView.setText(getResources().getString(R.string.no_data_arrrets));
-                return;
-            }
 
             String codeArret = dataArret.getXmldata().getHoraires().getHoraire().getDescription().getCode();
+            //If there is no next last buses
+
+
 
             for (ArretsTransport arret : mArretTransportList) {
-                if (arret.getArretCode().toLowerCase().contains(codeArret.toString().toLowerCase())) {
-                    String nextT1 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[0].getDuree();
-                    String nextT2 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[1].getDuree();
+                if (arret.getArretCode().toLowerCase().contains(codeArret.toString().toLowerCase())
+                        && codeArret.toLowerCase().contains(arret.getArretCode().toLowerCase())) {
+
+                    TextView textViewNoArret = (TextView) findViewById(R.id.textView_No_Arret);
+                    if(Integer.parseInt(NPassages) < 2) {
+                        mTextViewTime1.setVisibility(View.GONE);
+                        mTextViewTime2.setText(View.GONE);
+                        textViewNoArret.setVisibility(View.VISIBLE);
+                    } else {
+
+                        textViewNoArret.setVisibility(View.GONE);
+                        mTextViewTime1.setVisibility(View.VISIBLE);
+                        mTextViewTime2.setVisibility(View.VISIBLE);
+
+                        String nextT1 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[0].getDuree();
+                        String nextT2 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[1].getDuree();
+                        mTextViewTime1.setText(nextT1);
+                        mTextViewTime2.setText(nextT2);
+                    }
 
                     mTextViewLigne.setText(arret.getArretLineNom());
                     mTextViewArret.setText(arret.getArretNom());
                     mTextViewSens.setText(arret.getArretVersSens());
-                    mTextViewTime1.setText(nextT1);
-                    mTextViewTime2.setText(nextT2);
+
 
                     mTextViewLigne.setTag(arret.getArretLineColor()); //Putting color for adding it to the DB
 

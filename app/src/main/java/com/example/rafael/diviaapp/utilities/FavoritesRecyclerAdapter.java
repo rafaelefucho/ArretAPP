@@ -32,7 +32,7 @@ public class FavoritesRecyclerAdapter extends RecyclerView.Adapter<FavoritesRecy
     public FavoritesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.simple_dropdown_item, parent, false);
+        View view = inflater.inflate(R.layout.simple_item_favorite_adapter, parent, false);
         return new FavoritesViewHolder(view);
     }
 
@@ -87,9 +87,9 @@ public class FavoritesRecyclerAdapter extends RecyclerView.Adapter<FavoritesRecy
 
         public FavoritesViewHolder(View view) {
             super(view);
-            Ligne = (TextView) view.findViewById(R.id.textView_Ligne);
-            Arret = (TextView) view.findViewById(R.id.textView_Arret);
-            Sens  = (TextView) view.findViewById(R.id.textView_Sens);
+            Ligne = (TextView) view.findViewById(R.id.textView_Ligne_adapter);
+            Arret = (TextView) view.findViewById(R.id.textView_Arret_adapter);
+            Sens  = (TextView) view.findViewById(R.id.textView_Sens_adapter);
             view.setOnClickListener(this);
 
         }
