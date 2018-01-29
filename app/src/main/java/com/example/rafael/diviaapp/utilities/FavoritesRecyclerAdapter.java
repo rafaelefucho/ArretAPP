@@ -3,11 +3,13 @@ package com.example.rafael.diviaapp.utilities;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rafael.diviaapp.R;
 import com.example.rafael.diviaapp.utilities.data.ArretFavoriteContract;
@@ -28,6 +30,25 @@ public class FavoritesRecyclerAdapter extends RecyclerView.Adapter<FavoritesRecy
         this.mFavoritesItemClickListener = favoritesItemClickListener;
     }
 
+    public boolean isArretOnRecyclerView(String newRefs){
+
+        if(mCursor != null)
+        {
+            String refs;
+            mCursor.moveToFirst();
+            mCursor.moveToPrevious();
+            while(mCursor.moveToNext())
+            {
+                refs = mCursor.getString(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite.COLUMN_REFS));
+                if (refs.contentEquals(newRefs)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public FavoritesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -45,12 +66,12 @@ public class FavoritesRecyclerAdapter extends RecyclerView.Adapter<FavoritesRecy
         String arret = mCursor.getString(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite.COLUMN_ARRET));
         String ligne = mCursor.getString(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite.COLUMN_LIGNE));
         String sens =  mCursor.getString(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite.COLUMN_SENS));
-        String color = mCursor.getString(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite.COLUMN_COLOR));
+        String hexColor = mCursor.getString(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite.COLUMN_COLOR));
         long id = mCursor.getLong(mCursor.getColumnIndex(ArretFavoriteContract.ArretFavorite._ID));
 
-        String hexColor = Integer.toHexString(Integer.parseInt(color));
 
-        holder.Ligne.setBackgroundColor(0xff000000 + Integer.parseInt(hexColor,16));
+
+        holder.Ligne.setBackgroundColor(Color.parseColor(hexColor));
         holder.Arret.setText(arret);
         holder.Ligne.setText(ligne);
         holder.Sens.setText(sens);
@@ -91,8 +112,23 @@ public class FavoritesRecyclerAdapter extends RecyclerView.Adapter<FavoritesRecy
             Arret = (TextView) view.findViewById(R.id.textView_Arret_adapter);
             Sens  = (TextView) view.findViewById(R.id.textView_Sens_adapter);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    CharSequence text = mContext.getString(R.string.hint_to_delete);
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(mContext, text, duration);
+                    toast.show();
+
+                    return false;
+                }
+            });
+
 
         }
+
 
         @Override
         public void onClick(View view) {

@@ -19,6 +19,12 @@ import java.util.List;
 
 public class loadData {
 
+    public static String getRefsFromInternet(ArretsTransport arret) {
+        //Pendiente por hacer
+        return null;
+    }
+
+
     //Proximo a ser borrado
     public static String[] fillArrets(List<ArretsTransport> list){
         String[] array = new String[list.size()];

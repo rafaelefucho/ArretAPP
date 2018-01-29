@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">DiviaAPP</string>
-    <string name="autocomplete_hint">Please introduce the STOP</string>
+    <string name="app_name">Next Bus Dijon</string>
+    <string name="autocomplete_hint">Please introduce the STOP Ex:Salengro</string>
 
     <string name="default_nom">Salengro</string>
     <string name="default_ligne">B12</string>
@@ -8,7 +8,11 @@
     <string name="default_time1">12:35</string>
     <string name="default_time2">12:45</string>
 
+    <string name="toast_arret_in_favorites">The stop is already in favorites</string>
+
     <string name="no_data">The is no data to show</string>
     <string name="no_internet_connection">No internet, please check your connection.</string>
     <string name="no_data_arrrets">There are not more TimeSchedule arrets for today</string>
+    <string name="favorites">Favorites:</string>
+    <string name="hint_to_delete">Swipe left or right to delete</string>
 </resources>

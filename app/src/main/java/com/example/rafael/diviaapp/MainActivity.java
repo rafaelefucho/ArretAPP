@@ -9,9 +9,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,10 +28,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rafael.diviaapp.utilities.AdapterArret;
 import com.example.rafael.diviaapp.utilities.ArretsTransport;
 import com.example.rafael.diviaapp.utilities.FavoritesRecyclerAdapter;
+import com.example.rafael.diviaapp.utilities.JsonUtils.Description;
 import com.example.rafael.diviaapp.utilities.JsonUtils.Xml_Data_Arret_Temp;
 import com.example.rafael.diviaapp.utilities.LignesTransport;
 import com.example.rafael.diviaapp.utilities.NetworkUtils;
@@ -45,7 +49,10 @@ import org.json.JSONObject;
 import org.json.XML;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FavoritesRecyclerAdapter.FavoritesItemClickListener{
@@ -60,12 +67,19 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
     private TextView mTextViewSens;
     private TextView mTextViewTime1;
     private TextView mTextViewTime2;
+    private CountDownTimer mCountDownTimer1;
+    private CountDownTimer mCountDownTimer2;
+
 
     private ConstraintLayout mCLArretInfo;
     private ConstraintLayout mCLNoData;
     private ConstraintLayout mCLLoading;
 
     private Context mContextActivityMain;
+
+    private String mCurrentArret;
+    private ArretsTransport mArretBackup;
+
 
     private List<LignesTransport> mlignesTransportList = new ArrayList<LignesTransport>(); //Soon to be erased
     private List<ArretsTransport> mArretTransportList = new ArrayList<ArretsTransport>();
@@ -97,6 +111,14 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
         setupRecyclerView();
 
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (mCurrentArret != null) {
+            new getArretInfo().execute(mCurrentArret);
+        }
     }
 
     private void setupFavoritesDB() {
@@ -194,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
                     ArretsTransport arret =(ArretsTransport) item;
                     String arretURL = NetworkUtils.buildUrlArretTemp(arret.getArretRefs());
                     mTextViewArret.setTag(arretURL);
+                    mCurrentArret = arretURL;
                     new getArretInfo().execute(arretURL);
                 }
             }
@@ -202,8 +225,15 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
 
     private void add_arret_to_favorite(View view){
 
-        String arret = mTextViewArret.getText().toString();
+
         String refs  = mTextViewArret.getTag().toString();
+        if (mFavoritesRecyclerAdapter.isArretOnRecyclerView(refs)){
+            Toast.makeText(this, R.string.toast_arret_in_favorites,
+                    Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        String arret = mTextViewArret.getText().toString();
         String ligne = mTextViewLigne.getText().toString();
         String sens  = mTextViewSens.getText().toString();
         String color = (String) mTextViewLigne.getTag();
@@ -231,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
 
         String arretURL = NetworkUtils.buildUrlArretTemp(clickedFavoriteRef);
         mTextViewArret.setTag(clickedFavoriteRef);
+        mCurrentArret = arretURL;
         new getArretInfo().execute(arretURL);
 
     }
@@ -293,48 +324,85 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
             String NPassages = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getNb();
 
             String codeArret = dataArret.getXmldata().getHoraires().getHoraire().getDescription().getCode();
+            Description arretDescription = dataArret.getXmldata().getHoraires().getHoraire().getDescription();
             //If there is no next last buses
 
 
+            TextView textViewNoArret = (TextView) findViewById(R.id.textView_No_Arret);
+            if (Integer.parseInt(NPassages) < 2) {
+                mTextViewTime1.setVisibility(View.GONE);
+                mTextViewTime2.setVisibility(View.GONE);
+                textViewNoArret.setVisibility(View.VISIBLE);
+            } else {
 
-            for (ArretsTransport arret : mArretTransportList) {
-                if (arret.getArretCode().toLowerCase().contains(codeArret.toString().toLowerCase())
-                        && codeArret.toLowerCase().contains(arret.getArretCode().toLowerCase())) {
+                textViewNoArret.setVisibility(View.GONE);
+                mTextViewTime1.setVisibility(View.VISIBLE);
+                mTextViewTime2.setVisibility(View.VISIBLE);
 
-                    TextView textViewNoArret = (TextView) findViewById(R.id.textView_No_Arret);
-                    if(Integer.parseInt(NPassages) < 2) {
-                        mTextViewTime1.setVisibility(View.GONE);
-                        mTextViewTime2.setText(View.GONE);
-                        textViewNoArret.setVisibility(View.VISIBLE);
-                    } else {
+                String nextT1 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[0].getDuree();
+                String nextT2 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[1].getDuree();
+                mTextViewTime1.setText(nextT1);
+                mTextViewTime2.setText(nextT2);
 
-                        textViewNoArret.setVisibility(View.GONE);
-                        mTextViewTime1.setVisibility(View.VISIBLE);
-                        mTextViewTime2.setVisibility(View.VISIBLE);
+                String currentTime = dataArret.getXmldata().getHeure();
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                try {
+                    Date CT = format.parse(currentTime);
+                    Date nextTime1 = format.parse(nextT1);
+                    Date nextTime2 = format.parse(nextT2);
 
-                        String nextT1 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[0].getDuree();
-                        String nextT2 = dataArret.getXmldata().getHoraires().getHoraire().getPassages().getPassage()[1].getDuree();
-                        mTextViewTime1.setText(nextT1);
-                        mTextViewTime2.setText(nextT2);
+                    long diff = nextTime1.getTime() - CT.getTime();
+
+                    if (mCountDownTimer1 != null || mCountDownTimer2 != null) {
+
+                        mCountDownTimer1.cancel();
+                        mCountDownTimer2.cancel();
+
                     }
+                    mCountDownTimer1 = new CountDownTimer(diff, 1000 * 60) {
 
-                    mTextViewLigne.setText(arret.getArretLineNom());
-                    mTextViewArret.setText(arret.getArretNom());
-                    mTextViewSens.setText(arret.getArretVersSens());
+                        public void onTick(long millisUntilFinished) {
+                            mTextViewTime1.setText(millisUntilFinished / (1000 * 60) + " min");
+                        }
+
+                        public void onFinish() {
+                            mTextViewTime1.setText("The bus should be here!");
+                        }
+                    }.start();
+
+                    diff = nextTime2.getTime() - CT.getTime();
+
+                    mCountDownTimer2 = new CountDownTimer(diff, 1000 * 60) {
+
+                        public void onTick(long millisUntilFinished) {
+                            mTextViewTime2.setText(millisUntilFinished / (1000 * 60) + " min");
+                        }
+
+                        public void onFinish() {
+                            mTextViewTime2.setText("The bus should be here!");
+                        }
+                    }.start();
 
 
-                    mTextViewLigne.setTag(arret.getArretLineColor()); //Putting color for adding it to the DB
-
-                    String hexColor = Integer.toHexString(Integer.parseInt(arret.getArretLineColor()));
-                    mTextViewLigne.setBackgroundColor(0xff000000 + Integer.parseInt(hexColor,16));
-
-                    mCLArretInfo.setVisibility(View.VISIBLE);
-                    mCLLoading.setVisibility(View.GONE);
-
-                    break;
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
+
             }
 
+
+            mTextViewLigne.setText(arretDescription.getLigne_nom());
+            mTextViewArret.setText(arretDescription.getArret());
+
+            String sens = dataArret.getXmldata().getHoraires().getHoraire().getDescription().getVers();
+
+            mTextViewSens.setText(sens);
+            mTextViewLigne.setTag(arretDescription.getCouleur()); //Putting color for adding it to the DB
+            mTextViewLigne.setBackgroundColor(Color.parseColor(arretDescription.getCouleur()));
+
+            mCLArretInfo.setVisibility(View.VISIBLE);
+            mCLLoading.setVisibility(View.GONE);
         }
     }
 }

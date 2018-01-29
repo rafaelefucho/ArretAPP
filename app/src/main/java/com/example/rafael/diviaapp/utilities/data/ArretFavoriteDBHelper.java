@@ -12,7 +12,7 @@ public class ArretFavoriteDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "arretFavorite.db";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public ArretFavoriteDBHelper (Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
