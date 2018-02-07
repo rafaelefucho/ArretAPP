@@ -4,14 +4,15 @@ package com.example.rafael.diviaapp;
  * Created by Rafael on 10/01/2018.
  */
 
-import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.constraint.ConstraintLayout;
@@ -22,6 +23,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.util.Xml;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,7 +46,6 @@ import com.example.rafael.diviaapp.utilities.loadData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
     private Context mContextActivityMain;
 
     private String mCurrentArret;
-    private ArretsTransport mArretBackup;
+    private ArretsTransport mArretBackup; //Have to check, I think soon to be erased
 
 
     private List<LignesTransport> mlignesTransportList = new ArrayList<LignesTransport>(); //Soon to be erased
@@ -109,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
         setupArretInfoOfTheTextView();
         setupFavoritesDB();
         setupRecyclerView();
-
-
     }
 
     @Override
@@ -266,6 +266,24 @@ public class MainActivity extends AppCompatActivity implements FavoritesRecycler
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.map_button) {
+
+            String pdf_url = "https://www.divia.fr/download/Plan-sche-2017-web.pdf";
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdf_url));
+            startActivity(browserIntent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private class getArretInfo extends AsyncTask<String, Void, JSONObject>{
 

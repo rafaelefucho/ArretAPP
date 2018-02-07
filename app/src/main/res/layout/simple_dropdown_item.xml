@@ -49,13 +49,13 @@
         app:layout_constraintStart_toEndOf="@+id/textView_arrow"
         app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
 
-    <TextView
+    <ImageView
         android:id="@+id/textView_arrow"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="18dp"
+        android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        android:text="-->"
-        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_Ligne"
         app:layout_constraintStart_toEndOf="@+id/textView_Ligne"
-        app:layout_constraintTop_toTopOf="@+id/textView_Arret" />
+        app:layout_constraintTop_toTopOf="@+id/textView_Ligne"
+        app:srcCompat="@drawable/arrow_right_direction" />
 </android.support.constraint.ConstraintLayout>

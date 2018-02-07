@@ -125,16 +125,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/textView_arrow_main"
             app:layout_constraintStart_toEndOf="@+id/textView_arrow_main" />
 
-        <TextView
-            android:id="@+id/textView_arrow_main"
+        <ImageView
+            android:id="@+id/textView_arrow_main1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="-->"
             android:textSize="12sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textView_Ligne_main"
             app:layout_constraintStart_toEndOf="@+id/textView_Ligne_main"
-            app:layout_constraintTop_toBottomOf="@+id/textView_Arret_main" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_Arret_main"/>
 
         <TextView
             android:id="@+id/textView_time1_main"
@@ -185,6 +186,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView_Ligne_main"
             app:layout_constraintTop_toTopOf="@+id/button" />
+
+        <ImageView
+            android:id="@+id/textView_arrow_main"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView_Ligne_main"
+            app:layout_constraintStart_toEndOf="@+id/textView_Ligne_main"
+            app:layout_constraintTop_toBottomOf="@+id/textView_Arret_main"
+            app:srcCompat="@drawable/arrow_right_direction" />
 
     </android.support.constraint.ConstraintLayout>
     <LinearLayout
